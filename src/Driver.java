@@ -1,4 +1,6 @@
 
+import math.Stats;
+
 import org.joda.time.DateTime;
 
 import data.PriceBar;
@@ -18,7 +20,11 @@ public class Driver {
 		
 		PriceHistory ph = ydr.getHistoricalStockPrices("GOOG", new DateTime(2013,5,1,0,0,0),  new DateTime(2013,5,10,0,0,0), PriceHistory.DAILY);
 		
-		PriceHistory ph2 = ydr.getHistoricalStockPrices("GOOG", new DateTime(2012,2,2,0,0,0), PriceHistory.DAILY);
+		PriceHistory ph2 = ydr.getHistoricalStockPrices("GOOG", new DateTime(2013,5,1,0,0,0),  new DateTime(2013,5,10,0,0,0), PriceHistory.DAILY);
+		
+		double[][] rm = Stats.cov(ph, ph2);
+		
+		
 		
 		//for(PriceBar pb : ph2.getPriceHistory()) 
 		//	System.err.println(pb.getDate().toString() + " " + pb.getClose());

@@ -1,7 +1,12 @@
 package math;
 
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.random.CorrelatedRandomVectorGenerator;
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.correlation.Covariance;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
+import data.PriceHistory;
 import data.QuoteHistory;
 
 public class Stats {
@@ -102,6 +107,23 @@ public class Stats {
 		}
 	}
 	*/
+	
+	
+	public static double[][] cov(PriceHistory h1, PriceHistory h2) {
+		int length = h1.getPriceHistory().size();
+		
+		double[][] data = new double[length][length];
+		
+		for(int i=0;i<length;i++) {
+			data[0][i] = h1.getPriceHistory().get(i).getClose();
+			data[1][i] = h2.getPriceHistory().get(i).getClose();
+		}
+		
+		
+		PearsonsCorrelation pc = new PearsonsCorrelation(data);
+		RealMatrix rm =  pc.computeCorrelationMatrix(data);
+		return rm.getData();
+	}
 	
 	
 }
