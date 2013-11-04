@@ -1,6 +1,7 @@
 package indicators;
 
-import org.apache.commons.math.stat.descriptive.moment.Variance;
+
+import org.apache.commons.math3.stat.descriptive.moment.Variance;
 
 import data.QuoteHistory;
 

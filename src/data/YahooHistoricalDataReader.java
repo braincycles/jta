@@ -86,15 +86,15 @@ public class YahooHistoricalDataReader implements HistorialDataReader {
 		return ph;
 	}
 
-	
+
 	public PriceHistory getHistoricalStockPrices(String symbol, DateTime date, int base, boolean latestFirst) {
 		return getHistoricalStockPrices(symbol, date, date, base, latestFirst);
 	}
-	
+
 	public PriceHistory getHistoricalStockPrices(String symbol, DateTime date, int base) {
 		return getHistoricalStockPrices(symbol, date, date, base, true);
 	}
-	
+
 	public PriceHistory getHistoricalStockPrices(String symbol, DateTime from, DateTime to, int base) {
 		return getHistoricalStockPrices(symbol, from, to, base, true);
 	}
@@ -115,27 +115,24 @@ public class YahooHistoricalDataReader implements HistorialDataReader {
 			URL yahoofin = new URL("http://ichart.finance.yahoo.com/table.csv?s=" + symbol + 
 					"&a="+fromMonth+"&b="+fromDay+"&c="+fromYear+"&d="+toMonth+"&e="+toDay+"&f="+toYear+"&g=d");
 
-			//URL yahoofin = new URL("http://finance.yahoo.com/d/quotes.csv?s=" + symbol + "&f=sl1d1t1c1ohgv&e=.csv");
 			URLConnection yc = yahoofin.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
 			String inputLine;
+			in.readLine(); // ignore header
 			while ((inputLine = in.readLine()) != null) {
 
 				String[] yahooStockInfo = inputLine.split(",");
 
-				if(!yahooStockInfo[0].equalsIgnoreCase("Date")) {
+				DateTime dt = getDateTime(yahooStockInfo[0]);
 
-					DateTime dt = getDateTime(yahooStockInfo[0]);
+				double open = Double.valueOf(yahooStockInfo[1]);
+				double high = Double.valueOf(yahooStockInfo[2]);
+				double low = Double.valueOf(yahooStockInfo[3]);
+				double close = Double.valueOf(yahooStockInfo[4]);
+				double volume = Double.valueOf(yahooStockInfo[5]);
 
-					double open = Double.valueOf(yahooStockInfo[1]);
-					double high = Double.valueOf(yahooStockInfo[2]);
-					double low = Double.valueOf(yahooStockInfo[3]);
-					double close = Double.valueOf(yahooStockInfo[4]);
-					double volume = Double.valueOf(yahooStockInfo[5]);
-
-					PriceBar priceBar = new PriceBar(dt, open, high, low, close,  volume);
-					history.addPriceBar(priceBar);
-				}
+				PriceBar priceBar = new PriceBar(dt, open, high, low, close,  volume);
+				history.addPriceBar(priceBar);
 			}
 			in.close();
 		} catch (Exception ex) {

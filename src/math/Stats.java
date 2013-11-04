@@ -1,15 +1,6 @@
 package math;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.DistributionFactory;
-import org.apache.commons.math.distribution.DistributionFactoryImpl;
-import org.apache.commons.math.distribution.NormalDistribution;
-import org.apache.commons.math.stat.StatUtils;
+import org.apache.commons.math3.stat.StatUtils;
 
 import data.QuoteHistory;
 
@@ -88,8 +79,9 @@ public class Stats {
 		return Math.sqrt(variance(qh, index, window, type));
 	}
 
+	/*
 	public static double cumNormal(double mean, double sd, double value) {
-		NormalDistribution n = DistributionFactory.newInstance().createNormalDistribution(mean, sd);
+		NormalDistribution n;// = DistributionFactory.newInstance().createNormalDistribution(mean, sd);
 		try {
 			return n.cumulativeProbability(value);
 		}
@@ -100,7 +92,7 @@ public class Stats {
 	}
 	
 	public static double invNormal(double mean, double sd, double value) {
-		NormalDistribution n = DistributionFactory.newInstance().createNormalDistribution(mean, sd);
+		NormalDistribution n;// = DistributionFactory.newInstance().createNormalDistribution(mean, sd);
 		try {
 			return n.inverseCumulativeProbability(value);
 		}
@@ -109,4 +101,7 @@ public class Stats {
 			return -1;
 		}
 	}
+	*/
+	
+	
 }
