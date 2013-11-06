@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 
 import data.PriceBar;
 import data.PriceHistory;
+import data.Util;
 import data.YahooHistoricalDataReader;
 
 
@@ -18,20 +19,27 @@ public class Driver {
 		YahooHistoricalDataReader ydr = new YahooHistoricalDataReader();
 		
 		
-		PriceHistory ph = ydr.getHistoricalStockPrices("GOOG", new DateTime(2013,5,1,0,0,0),  new DateTime(2013,5,10,0,0,0), PriceHistory.DAILY);
+		PriceHistory ph = ydr.getHistoricalStockPrices("BP.L", new DateTime(2013,10,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
 		
-		PriceHistory ph2 = ydr.getHistoricalStockPrices("GOOG", new DateTime(2013,5,1,0,0,0),  new DateTime(2013,5,10,0,0,0), PriceHistory.DAILY);
+		PriceHistory ph2 = ydr.getHistoricalStockPrices("BP" , new DateTime(2013,10,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
 		
-		double[][] rm = Stats.cov(ph, ph2);
+		Util.pad(ph, ph2);
 		
+		
+		//double rm = Stats.cov(ph, ph2);
+		//System.err.println(rm);
 		
 		
 		//for(PriceBar pb : ph2.getPriceHistory()) 
 		//	System.err.println(pb.getDate().toString() + " " + pb.getClose());
 		
-		for(PriceBar pb : ph.getPriceHistory()) 
-			System.err.println(pb.getDate().toString() + " " + pb.getClose());
+		//for(PriceBar pb : ph.getPriceHistory()) 
+		//	System.err.println(pb.getClose());
 		
+		
+		for(int i=0;i<ph.getPriceHistory().size();i++) {
+			System.err.println(ph.getPriceHistory().get(i).getClose() + " " + ph2.getPriceHistory().get(i).getClose());
+		}
 		
 		
 		//ydr.open("C:\\Users\\simon.COMSOL\\Desktop\\goog.csv");

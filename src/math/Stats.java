@@ -109,20 +109,21 @@ public class Stats {
 	*/
 	
 	
-	public static double[][] cov(PriceHistory h1, PriceHistory h2) {
+	public static double cov(PriceHistory h1, PriceHistory h2) {
 		int length = h1.getPriceHistory().size();
+		int length2 = h2.getPriceHistory().size();
 		
-		double[][] data = new double[length][length];
+		double[] data1 = new double[length];
+		double[] data2 = new double[length];
 		
 		for(int i=0;i<length;i++) {
-			data[0][i] = h1.getPriceHistory().get(i).getClose();
-			data[1][i] = h2.getPriceHistory().get(i).getClose();
+			data1[i] = h1.getPriceHistory().get(i).getClose();
+			data2[i] = h2.getPriceHistory().get(i).getClose();
 		}
 		
 		
-		PearsonsCorrelation pc = new PearsonsCorrelation(data);
-		RealMatrix rm =  pc.computeCorrelationMatrix(data);
-		return rm.getData();
+		PearsonsCorrelation pc = new PearsonsCorrelation();
+		return pc.correlation(data1, data2);
 	}
 	
 	
