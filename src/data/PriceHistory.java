@@ -1,7 +1,6 @@
 package data;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Vector;
 
 public class PriceHistory {
@@ -22,13 +21,11 @@ public class PriceHistory {
 
 
 	private String symbol;
-	//private List<PriceBar> priceHistory;
 	private Vector<PriceBar> priceHistory;
 	
 	public PriceHistory(String symbol, int base) {
 		this.symbol = symbol;
 		this.base = base;
-		//priceHistory = new ArrayList<PriceBar>();
 		priceHistory = new Vector<PriceBar>();
 	}
 	
@@ -40,7 +37,6 @@ public class PriceHistory {
 		this.symbol = symbol;
 	}
 
-	//public PriceHistory(List<PriceBar> _priceHistory) {
 	public PriceHistory(Vector<PriceBar> _priceHistory) {
 		this.priceHistory = _priceHistory;
 	}

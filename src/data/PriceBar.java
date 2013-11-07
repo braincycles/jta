@@ -3,7 +3,7 @@ package data;
 import org.joda.time.DateTime;
 
 
-public class PriceBar {
+public class PriceBar implements Comparable<PriceBar> {
 
 	private DateTime date;
 	private double volume;
@@ -15,6 +15,11 @@ public class PriceBar {
 	private int overUnderSold = 0;
 	private int priceAction = 0;
 
+
+	@Override
+	public boolean equals(Object obj) {
+		return ((PriceBar) obj).getDate().toLocalDate().isEqual(date.toLocalDate());
+	}
 
 	public PriceBar(double open, double high, double low, double close, double volume) {
 		super();
@@ -120,6 +125,10 @@ public class PriceBar {
 
 	public void setPriceAction(int priceAction) {
 		this.priceAction = priceAction;
+	}
+
+	public int compareTo(PriceBar o) {
+		return date.compareTo(o.getDate());
 	}
 
 

@@ -1,4 +1,6 @@
 
+import java.util.Vector;
+
 import math.Stats;
 
 import org.joda.time.DateTime;
@@ -16,15 +18,18 @@ public class Driver {
 
 	public Driver() {
 		
+		//dummyData();
+		
 		YahooHistoricalDataReader ydr = new YahooHistoricalDataReader();
 		
 		
-		PriceHistory ph = ydr.getHistoricalStockPrices("BP.L", new DateTime(2013,10,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
+		PriceHistory ph = ydr.getHistoricalStockPrices("BP.L", new DateTime(2005,10,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
 		
-		PriceHistory ph2 = ydr.getHistoricalStockPrices("BP" , new DateTime(2013,10,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
+		PriceHistory ph2 = ydr.getHistoricalStockPrices("BP" , new DateTime(2005,10,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
 		
+		System.err.println("Padding");
 		Util.pad(ph, ph2);
-		
+		System.err.println("Padded");
 		
 		//double rm = Stats.cov(ph, ph2);
 		//System.err.println(rm);
@@ -38,7 +43,7 @@ public class Driver {
 		
 		
 		for(int i=0;i<ph.getPriceHistory().size();i++) {
-			System.err.println(ph.getPriceHistory().get(i).getClose() + " " + ph2.getPriceHistory().get(i).getClose());
+			//System.err.println(ph.getPriceHistory().get(i).getClose() + " " + ph2.getPriceHistory().get(i).getClose());
 		}
 		
 		
@@ -81,6 +86,47 @@ public class Driver {
 		
 		
 	}
+	
+	
+	private void dummyData() {
+		
+		Vector<PriceBar> dum1 = new Vector<PriceBar>();
+		Vector<PriceBar> dum2 = new Vector<PriceBar>();
+		
+		
+		dum1.add(new PriceBar(new DateTime(2013,5,1,0,0,0),4,5,6,22,8));
+		dum1.add(new PriceBar(new DateTime(2013,5,2,0,0,0),4,5,6,28,8));
+		dum1.add(new PriceBar(new DateTime(2013,5,3,0,0,0),4,5,6,23,8));
+		dum1.add(new PriceBar(new DateTime(2013,5,4,0,0,0),4,5,6,29,8));
+		dum1.add(new PriceBar(new DateTime(2013,5,5,0,0,0),4,5,6,26,8));
+		dum1.add(new PriceBar(new DateTime(2013,5,7,0,0,0),4,5,6,27,8));
+		
+		dum2.add(new PriceBar(new DateTime(2013,5,1,0,0,0),4,5,6,289,8));
+		dum2.add(new PriceBar(new DateTime(2013,5,3,0,0,0),4,5,6,223,8));
+		dum2.add(new PriceBar(new DateTime(2013,5,4,0,0,0),4,5,6,245,8));
+		dum2.add(new PriceBar(new DateTime(2013,5,6,0,0,0),4,5,6,222,8));
+		dum2.add(new PriceBar(new DateTime(2013,5,7,0,0,0),4,5,6,249,8));
+		dum2.add(new PriceBar(new DateTime(2013,5,9,0,0,0),4,5,6,298,8));
+		
+		PriceHistory ph1 = new PriceHistory(dum1);
+		PriceHistory ph2 = new PriceHistory(dum2);
+		
+		Util.pad(ph1, ph2);
+		
+		for(int i=0;i<ph1.getPriceHistory().size();i++) {
+			System.out.println(ph1.getPriceHistory().get(i).getDate() + " " + ph1.getPriceHistory().get(i).getClose());
+		}
+		
+		System.out.println("---");
+		
+		for(int i=0;i<ph2.getPriceHistory().size();i++) {
+			System.out.println(ph2.getPriceHistory().get(i).getDate() + " " + ph2.getPriceHistory().get(i).getClose());
+		}
+		
+		
+		
+	}
+	
 	
 	public static void main(String[] args) {
 		new Driver();
