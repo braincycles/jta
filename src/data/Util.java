@@ -4,6 +4,15 @@ import java.util.Collections;
 import java.util.Vector;
 
 public class Util {
+	
+	public static void pad(PriceHistory[] ph) {
+		
+		for(int i = 0;i<ph.length-1;i++) {
+			pad(ph[i],ph[i+1]);
+		}
+		
+	}
+	
 
 
 	public static void pad(PriceHistory ph1, PriceHistory ph2) {
@@ -25,14 +34,20 @@ public class Util {
 		Collections.sort(pb1);
 		Collections.sort(pb2);
 		
+		if(pb1.size() != pb2.size()) System.out.println("Error");
+		
 		/* Set the -1 values to that of the previous pricebar */
 		for(PriceBar pb : pb1) 
-			if(pb.getClose()==-1)
-				pb.setClose(pb1.get(pb1.indexOf(pb)-1).getClose());
+			if(pb.getClose()==-1) {
+				if (pb1.indexOf(pb)-1 >=0) //Start of data, leave 0
+					pb.setClose(pb1.get(pb1.indexOf(pb)-1).getClose());
+			}
 		
 		for(PriceBar pb : pb2) 
-			if(pb.getClose()==-1)
-				pb.setClose(pb2.get(pb2.indexOf(pb)-1).getClose());
+			if(pb.getClose()==-1){
+				if (pb2.indexOf(pb)-1 >=0)
+					pb.setClose(pb2.get(pb2.indexOf(pb)-1).getClose());
+			}
 		
 			
 		

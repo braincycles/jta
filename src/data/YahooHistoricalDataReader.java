@@ -98,6 +98,30 @@ public class YahooHistoricalDataReader implements HistorialDataReader {
 	public PriceHistory getHistoricalStockPrices(String symbol, DateTime from, DateTime to, int base) {
 		return getHistoricalStockPrices(symbol, from, to, base, true);
 	}
+	
+	
+	public PriceHistory[] getHistoricalStockPrices(String symbols[], DateTime from, DateTime to, int base, boolean latestFirst) {
+		PriceHistory ph[] = new PriceHistory[0];
+		int i = 0;
+		for(String sym : symbols) {
+			System.out.println("Getting " + symbols[i]);
+			ph[i] =  getHistoricalStockPrices(sym, from, to, base, latestFirst);
+			i++;
+		}
+		return ph;
+	}
+	
+	public PriceHistory[] getHistoricalStockPrices(String symbols[], DateTime from, DateTime to, int base) {
+		PriceHistory ph[] = new PriceHistory[symbols.length];
+		int i = 0;
+		for(String sym : symbols) {
+			System.out.print("Getting " + symbols[i]);
+			ph[i] =  getHistoricalStockPrices(sym, from, to, base, false);
+			System.out.print(" " + ph[i].getPriceHistory().size() + " elements found.\n");
+			i++;
+		}
+		return ph;
+	}
 
 	public PriceHistory getHistoricalStockPrices(String symbol, DateTime from, DateTime to, int base, boolean latestFirst) {
 

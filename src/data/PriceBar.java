@@ -4,6 +4,12 @@ import org.joda.time.DateTime;
 
 
 public class PriceBar implements Comparable<PriceBar> {
+	
+	public final static int OPEN = 100;
+	public final static int CLOSE = 101;
+	public final static int HIGH = 102;
+	public final static int LOW = 103;
+	public final static int RETURNS = 104;
 
 	private DateTime date;
 	private double volume;
@@ -11,6 +17,8 @@ public class PriceBar implements Comparable<PriceBar> {
 	private double low;
 	private double open;
 	private double close;
+	private double ret;
+	
 	private int dayNumber;
 	private int overUnderSold = 0;
 	private int priceAction = 0;
@@ -28,6 +36,33 @@ public class PriceBar implements Comparable<PriceBar> {
 		this.open = open;
 		this.close = close;
 		this.volume = volume;
+		this.ret = 0;
+	}
+	
+	
+	public double getPrice(int type) {
+		switch(type) {
+		  case CLOSE: 
+			  return getClose();
+		  case OPEN: 
+			  return getOpen();
+		  case HIGH: 
+			  return getHigh();
+		  case LOW: 
+			  return getLow();
+		  case RETURNS: 
+			  return getRet();
+		  default:
+			  return getClose();
+		}
+	}
+
+	public double getRet() {
+		return ret;
+	}
+
+	public void setRet(double ret) {
+		this.ret = ret;
 	}
 
 	public PriceBar(DateTime date, double open, double high, double low, double close, double volume) {
@@ -38,7 +73,10 @@ public class PriceBar implements Comparable<PriceBar> {
 		this.close = close;
 		this.date = date;
 		this.volume = volume;
+		this.ret = 0;
 	}
+	
+	
 
 	public PriceBar(int dayNumber, double open, double high, double low, double close, double volume) {
 		super();
@@ -47,6 +85,7 @@ public class PriceBar implements Comparable<PriceBar> {
 		this.open = open;
 		this.close = close;
 		this.volume = volume;
+		this.ret = 0;
 	}
 
 

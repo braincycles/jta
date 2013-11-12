@@ -14,6 +14,8 @@ public abstract class Indicator {
 	public static int HARDLONG=10;
 	public static int HARDSHORT=-10;
 	
+	protected boolean save = true;
+	
     protected double value;
     protected QuoteHistory qh;
     private final List<IndicatorValue> history;
