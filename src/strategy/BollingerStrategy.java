@@ -3,20 +3,19 @@ package strategy;
 import java.util.List;
 
 import data.PriceBar;
-import data.QuoteHistory;
+import data.PriceHistory;
 
 import indicators.Bollinger;
+import indicators.IndicatorValue;
 
 public class BollingerStrategy {
 	
-	private int period;
 	private Bollinger boll;
-	private QuoteHistory quoteHistory;
+	private PriceHistory quoteHistory;
 	
-	public BollingerStrategy(QuoteHistory qh, int p) {
-		this.period = p;
+	public BollingerStrategy(PriceHistory qh, int period) {
 		this.quoteHistory = qh;
-		this.boll = new Bollinger(qh, period, 2);
+		this.boll = new Bollinger(period, 2);
 	}
 	
 	
@@ -27,17 +26,21 @@ public class BollingerStrategy {
 			PriceBar priceBar = prices.get(i);
 			double close = priceBar.getClose();
 			
-			boll.calculate(i);
+			IndicatorValue value = boll.tick(priceBar, PriceBar.CLOSE);
 			//System.err.println(prices.get(i).getDate() + " " + close + " " + boll.getLowerBand() + " " + boll.getMidpoint() + " "  + boll.getUpperBand());
+			double upperBand = value.getValue(Bollinger.UPPERBAND);
+			double lowerBand = value.getValue(Bollinger.LOWERBAND);
+			double midPoint = value.getValue(Bollinger.MIDPOINT);
 			
-			if(close > boll.getUpperBand()) {
+			
+			if(close > upperBand) {
 				priceBar.setPriceAction(-10);
-				//System.err.println(priceBar.getDate() + " Top " + close + " " + boll.getLowerBand() + " " + boll.getMidpoint() + " "  + boll.getUpperBand());
+				System.out.println(priceBar.getDate() + " Top " + close + " " + lowerBand + " " + midPoint + " "  + upperBand);
 			}
 			
-			if(close < boll.getLowerBand()) {
+			if(close < lowerBand) {
 				priceBar.setPriceAction(10);
-				//System.err.println(priceBar.getDate() + " Bot " + close + " " + boll.getLowerBand() + " " + boll.getMidpoint() + " "  + boll.getUpperBand());
+				System.out.println(priceBar.getDate() + " Bot " + close + " " + lowerBand + " " + midPoint + " "  + upperBand);
 			}
 			
 		}

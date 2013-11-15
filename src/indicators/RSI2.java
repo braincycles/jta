@@ -2,7 +2,9 @@ package indicators;
 
 import java.util.*;
 
-import data.QuoteHistory;
+import org.joda.time.DateTime;
+
+import data.PriceBar;
 
 /**
  * Relative Strength Index. Implemented up to this specification:
@@ -35,18 +37,17 @@ import data.QuoteHistory;
  */
 
 public class RSI2 extends Indicator {
+	public static int RSI = 0;
 	private final int periodLength;
 	private final Stack<Averages> avgList;
 
-	public RSI2(QuoteHistory qh, int periodLength) {
-		super(qh);
+	public RSI2(int periodLength) {
+		super();
 		this.periodLength = periodLength;
 		avgList = new Stack<Averages>();
 	}
 
-	public QuoteHistory getQuoteHistory() {
-		return qh;
-	}
+
 
 	private class Averages {
 
@@ -67,26 +68,25 @@ public class RSI2 extends Indicator {
 	}
 
 	@Override
-	public double calculate(int upto) {
+	public IndicatorValue tick(PriceBar pb, int type) {
+		updateValues(pb, periodLength);
 		
-		if(!isValid(upto)) return 0;
 		
-		int qhSize = qh.size();
+		int qhSize = values.size();
 		int lastBar = qhSize - 1;
 		int firstBar = lastBar - periodLength + 1;
-		if(upto<0) upto = lastBar;
-		if(upto<lastBar) lastBar = upto;
-		if(upto==0) lastBar++;
-
+		
+		if(values.size() != periodLength) return new IndicatorValue(new DateTime(), new double[]{0.0});
+		
 		double gains = 0, losses = 0, avgUp = 0 , avgDown = 0 ;
 
-		double delta = qh.getPriceBar(lastBar).getClose() - qh.getPriceBar(lastBar - 1).getClose();
+		double delta = values.getPriceBar(lastBar).getPrice(type) - values.getPriceBar(lastBar - 1).getPrice(type);
 		gains = Math.max(0, delta);
 		losses = Math.max(0, -delta);
 
 		if (avgList.isEmpty()) {
 			for (int bar = firstBar + 1; bar <= lastBar; bar++) {
-				double change = qh.getPriceBar(bar).getClose() - qh.getPriceBar(bar - 1).getClose();
+				double change = values.getPriceBar(bar).getPrice(type) - values.getPriceBar(bar - 1).getPrice(type);
 				gains += Math.max(0, change);
 				losses += Math.max(0, -change);
 			}
@@ -104,12 +104,14 @@ public class RSI2 extends Indicator {
 			avgList.add(new Averages(avgUp,avgDown));
 		}
 		value = 100 - (100 / (1+ (avgUp / avgDown)));
-		return value;
+		
+		return new IndicatorValue(pb.getDate(), new double[]{value});
 	}
 	
+	
 	@Override
-	public boolean isValid(int upto) {
-		return (qh.size() > periodLength) && (upto>=periodLength);
+	public boolean isValid() {
+		return (values.size() > periodLength);
 	}
 
 }

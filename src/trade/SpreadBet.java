@@ -1,5 +1,7 @@
 package trade;
 
+import org.joda.time.DateTime;
+
 public class SpreadBet extends Trade{
 
 	private boolean active;
@@ -10,15 +12,15 @@ public class SpreadBet extends Trade{
 	private double stopLossPrice;
 	private double takeProfitPrice;
 
-	public SpreadBet(int type, double bet, double initialPrice, int base, Spread spr, double stopLossPrice, double takeProfitPrice) {
-		super(Trade.SPREADBET);
+	public SpreadBet(DateTime date, Stock stock, int type, double bet, double initialPrice, int base, Spread spr, double stopLossPrice, double takeProfitPrice) {
+		super(date, stock, );
 		this.tradeType = type;
 		this.stopLossPrice = stopLossPrice;
 		this.takeProfitPrice = takeProfitPrice;
 		this.base = base;
 		this.spread = spr;
 		this.bet = bet;	
-		this.initialPrice = initialPrice;
+		this.price = price;
 		this.initialPoints = (int) ((base * initialPrice) + spread.getSpread(type));
 		this.active = true;
 	}
@@ -97,6 +99,12 @@ public class SpreadBet extends Trade{
 
 	public void setTakeProfitPrice(double takeProfitPrice) {
 		this.takeProfitPrice = takeProfitPrice;
+	}
+
+	@Override
+	public double getCostOfTrade() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

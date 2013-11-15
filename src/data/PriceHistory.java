@@ -1,6 +1,7 @@
 package data;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
 public class PriceHistory {
@@ -10,6 +11,8 @@ public class PriceHistory {
 	public static int MONTLY = 2;
 
 	private int base = DAILY;
+	private int counter = 0;
+	
 
 	public int getBase() {
 		return base;
@@ -18,13 +21,18 @@ public class PriceHistory {
 	public void setBase(int base) {
 		this.base = base;
 	}
+	
+	
+	public PriceBar tick() {
+		return priceHistory.get(counter++);
+	}
 
 
 	private String symbol;
 	private Vector<PriceBar> priceHistory;
 
 	public PriceHistory() {
-		
+		priceHistory = new Vector<PriceBar>();
 	}
 	
 	public PriceHistory(String symbol, int base) {
@@ -49,6 +57,18 @@ public class PriceHistory {
 	public int addPriceBar(PriceBar priceBar) {
 		priceHistory.add(priceBar);
 		return priceHistory.size();
+	}
+	
+	public void addFirst(PriceBar priceBar) {
+		priceHistory.add(0, priceBar);
+	}
+	
+	public void addLast(PriceBar priceBar) {
+		priceHistory.add(priceBar);
+	}
+	
+	public PriceBar removeLast() {
+		return priceHistory.remove(priceHistory.size()-1);
 	}
 
 
@@ -92,6 +112,66 @@ public class PriceHistory {
 			ph.calculateReturns(price, percentage);
 		}
 	}
+	
+	
+	public PriceBar getLastPriceBar() {
+		return priceHistory.get(priceHistory.size() - 1);
+	}
+
+	public PriceBar getFirstPriceBar() {
+		return priceHistory.get(0);
+	}
+	
+	public List<PriceBar> getAll() {
+		return priceHistory;
+	}
+	
+	public int size() {
+		return priceHistory.size();
+	}
+	
+	public PriceBar getPriceBar(int index) {
+		return priceHistory.get(index);
+	}
+
+	
+	public List<PriceBar> getPriceBars() {
+		return priceHistory;
+	}
+	
+	
+	public double[] getAll(int type) {
+		List<PriceBar> bars = getAll();
+		double[] data = new double[bars.size()];
+		for(int i=0;i<data.length;i++) {
+			if(type == PriceBar.OPEN)
+				data[i] = bars.get(i).getOpen();
+			if(type == PriceBar.CLOSE)
+				data[i] = bars.get(i).getClose();
+			if(type == PriceBar.HIGH)
+				data[i] = bars.get(i).getHigh();
+			if(type == PriceBar.LOW)
+				data[i] = bars.get(i).getLow();
+		}
+		return data;
+	}
+	
+	public double[] getAllReturns(int type) {
+		List<PriceBar> bars = getAll();
+		double[] data = new double[bars.size()];
+		for(int i=1;i<data.length;i++) {
+			if(type == PriceBar.OPEN)
+				data[i] = bars.get(i).getOpen()-bars.get(i-1).getOpen();
+			if(type == PriceBar.CLOSE)
+				data[i] = bars.get(i).getClose()-bars.get(i-1).getClose();
+			if(type == PriceBar.HIGH)
+				data[i] = bars.get(i).getHigh()-bars.get(i-1).getHigh();
+			if(type == PriceBar.LOW)
+				data[i] = bars.get(i).getLow()-bars.get(i-1).getLow();
+		}
+		return data;
+	}
+
 
 }
 

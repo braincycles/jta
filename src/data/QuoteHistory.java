@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Holds and validates the priceBar history for a strategy.
  */
-public class QuoteHistory {
+public class QuoteHistory extends PriceHistory {
 
 	private static final String lineSep = System.getProperty("line.separator");
 	
@@ -35,9 +35,7 @@ public class QuoteHistory {
 		validationMessages = new ArrayList<String>();
 	}
 
-	public List<PriceBar> getPriceBars() {
-		return priceBars;
-	}
+
 
 	public QuoteHistory() {
 		this("BackDataDownloader");
@@ -52,9 +50,7 @@ public class QuoteHistory {
 		return isForex;
 	}
 
-	public List<PriceBar> getAll() {
-		return priceBars;
-	}
+	
 
 
 	public String getQuoteName() {
@@ -86,66 +82,24 @@ public class QuoteHistory {
 		return validationMessages;
 	}
 
-	public int size() {
-		return priceBars.size();
-	}
+	
 
 	public void addHistoricalPriceBar(PriceBar priceBar) {
 		priceBars.add(priceBar);
 	}
 
-	public PriceBar getPriceBar(int index) {
-		return priceBars.get(index);
-	}
-
-	public int getSize() {
-		return priceBars.size();
-	}
+	
 
 	public boolean getIsHistRequestCompleted() {
 		return isHistRequestCompleted;
 	}
 
-	public PriceBar getLastPriceBar() {
-		return priceBars.get(priceBars.size() - 1);
-	}
-
-	public PriceBar getFirstPriceBar() {
-		return priceBars.get(0);
-	}
 	
 	
-	public double[] getAll(int type) {
-		List<PriceBar> bars = getAll();
-		double[] data = new double[bars.size()];
-		for(int i=0;i<data.length;i++) {
-			if(type == OPEN)
-				data[i] = bars.get(i).getOpen();
-			if(type == CLOSE)
-				data[i] = bars.get(i).getClose();
-			if(type == HIGH)
-				data[i] = bars.get(i).getHigh();
-			if(type == LOW)
-				data[i] = bars.get(i).getLow();
-		}
-		return data;
-	}
 	
-	public double[] getAllReturns(int type) {
-		List<PriceBar> bars = getAll();
-		double[] data = new double[bars.size()];
-		for(int i=1;i<data.length;i++) {
-			if(type == OPEN)
-				data[i] = bars.get(i).getOpen()-bars.get(i-1).getOpen();
-			if(type == CLOSE)
-				data[i] = bars.get(i).getClose()-bars.get(i-1).getClose();
-			if(type == HIGH)
-				data[i] = bars.get(i).getHigh()-bars.get(i-1).getHigh();
-			if(type == LOW)
-				data[i] = bars.get(i).getLow()-bars.get(i-1).getLow();
-		}
-		return data;
-	}
+	
+	
+	
 
 	public double getPriceAction() {
 		return priceAction;

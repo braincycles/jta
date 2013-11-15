@@ -1,9 +1,23 @@
 
+import indicators.ADX;
+import indicators.Bollinger;
+import indicators.EMA;
+import indicators.RSI2;
+import indicators.SMA;
+
 import java.util.Vector;
 
 import math.Stats;
 
 import org.joda.time.DateTime;
+
+import strategy.BollingerStrategy;
+import trade.BackTester;
+import trade.Portfolio;
+import trade.PortfolioManager;
+import trade.Stock;
+import trade.StockTrade;
+import trade.Trade;
 
 import data.PriceBar;
 import data.PriceHistory;
@@ -18,27 +32,17 @@ public class Driver {
 
 	public Driver() {
 
-		//dummyData();
+		//testStrategy();
+		
+		//testBollinger();
+		
+		//testIndicators();
+		
+		//testPortfolio();
+		
+		testBackTester();
 
-		YahooHistoricalDataReader ydr = new YahooHistoricalDataReader();
-		
-		PriceHistory[] ph = ydr.getHistoricalStockPrices(
-				new String[]{"ASYS", "ADVS", "AAPL", "YHOO", "DELL", "COKE"}, 
-				new DateTime(2012,1,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
-		
-		PriceHistory.calculateReturns(ph, PriceBar.CLOSE, true);
-		
-		System.out.println("Padding");
-		Util.pad(ph);
-		System.out.println("Padded");
-		
-
-		int[] offset = {-2, -1,0,1, 2};
-		double[][][] res = Stats.correlationOverWindow(ph, PriceBar.CLOSE, offset, -1);
-
-		Stats.printCorrelationMatrix(res, offset);
-		
-		Stats.printCorrelationMatrix(ph, res, offset, 0.85);
+		//testCorrelation();
 
 		//ydr.open("C:\\Users\\simon.COMSOL\\Desktop\\goog.csv");
 		//QuoteHistory qh = ydr.read();
@@ -59,7 +63,7 @@ public class Driver {
 		//mr.addQuoteHistory(qh);
 		//mr.run();
 
-		//double mean = Stats.priceMean(qh, 100, 30, QuoteHistory.CLOSE);
+		//double mean = Stats.priceMean(qh, 100, 30, PriceBar.CLOSE);
 		//double sd = Stats.priceSD(qh, 100, 30, QuoteHistory.CLOSE);
 		//System.err.println(mean + " " + sd);
 
@@ -79,7 +83,143 @@ public class Driver {
 
 
 	}
+	
+	
+	private void testBackTester() {
+		
+		YahooHistoricalDataReader ydr = new YahooHistoricalDataReader();
 
+		PriceHistory[] ph = ydr.getHistoricalStockPrices(
+				new String[]{"COKE", "AAPL"}, 
+				new DateTime(2010,1,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
+		
+		
+		SMA sma = new SMA(10);
+		EMA ema = new EMA(10);	
+		RSI2 rsi = new RSI2(14);
+		
+		
+		
+		BackTester bt = new BackTester();
+		bt.addPriceHistories(ph);
+		bt.addIndicators(sma, ema, rsi);
+		
+		bt.run();
+		
+	}
+	
+	
+	private void testPortfolio() {
+		PortfolioManager pman = new PortfolioManager();
+		
+		Portfolio p = new Portfolio("Test 1", 1000000);
+		p.setAllowedConcurrentTrades(1);
+		pman.addPortfolio(p);
+		
+		try {
+			Trade t1 = new StockTrade(new DateTime(),new Stock("YHOO"),100, 67.45, 10);
+			pman.registerTrade("Test 1", t1);
+			pman.registerTrade("Test 1", t1);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		System.out.println(p.getCash());
+		
+	}
+	
+	private void testCorrelation() {
+		YahooHistoricalDataReader ydr = new YahooHistoricalDataReader();
+
+		PriceHistory[] ph = ydr.getHistoricalStockPrices(
+				new String[]{"ASYS", "ADVS", "AAPL", "YHOO", "DELL", "COKE"}, 
+				new DateTime(2012,1,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
+
+		PriceHistory.calculateReturns(ph, PriceBar.CLOSE, true);
+
+		System.out.println("Padding");
+		Util.pad(ph);
+		System.out.println("Padded");
+
+
+		int[] offset = {-2, -1,0,1, 2};
+		double[][][] res = Stats.correlationOverWindow(ph, PriceBar.CLOSE, offset, -1);
+
+		Stats.printCorrelationMatrix(res, offset);
+
+		Stats.printCorrelationMatrix(ph, res, offset, 0.85);
+	}
+
+
+	private void testIndicators() {
+		YahooHistoricalDataReader ydr = new YahooHistoricalDataReader();
+
+		PriceHistory[] ph = ydr.getHistoricalStockPrices(
+				new String[]{"COKE"}, 
+				new DateTime(2010,1,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
+		
+		//Util.pad(ph);
+		
+		SMA sma = new SMA(10);
+		EMA ema = new EMA(10);
+		
+		RSI2 rsi = new RSI2(14);
+		
+		ADX adx = new ADX(14);
+		
+		for(int i=0;i<ph[0].size();i++) {
+			
+			System.out.println(i + " " + ph[0].getPriceHistory().get(i).getClose() 
+					+ " " + sma.tick(ph[0].getPriceHistory().get(i), PriceBar.CLOSE).getFormattedValue(SMA.AVERAGE)
+					+ " " + ema.tick(ph[0].getPriceHistory().get(i), PriceBar.CLOSE).getFormattedValue(SMA.AVERAGE)
+					+ " " + rsi.tick(ph[0].getPriceHistory().get(i), PriceBar.CLOSE).getFormattedValue(RSI2.RSI)
+					+ " " + adx.tick(ph[0].getPriceHistory().get(i), PriceBar.CLOSE).getFormattedValue(ADX.ADX));
+			
+		}
+		
+		
+	}
+
+	
+	private void testStrategy() {
+		YahooHistoricalDataReader ydr = new YahooHistoricalDataReader();
+		PriceHistory[] ph = ydr.getHistoricalStockPrices(
+				new String[]{"COKE"}, 
+				new DateTime(2012,1,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
+		
+		Util.pad(ph);
+		
+		BollingerStrategy bs = new BollingerStrategy(ph[0], 30);
+		bs.run();
+	}
+	
+	
+	private void testBollinger() {
+		YahooHistoricalDataReader ydr = new YahooHistoricalDataReader();
+
+		PriceHistory[] ph = ydr.getHistoricalStockPrices(
+				new String[]{"COKE"}, 
+				new DateTime(2012,1,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
+		
+		Util.pad(ph);
+		
+		Bollinger bol = new Bollinger(10, 20);
+		
+		for(int i=0;i<ph[0].size();i++) {
+			
+			System.out.println(i 
+					+ " " + bol.tick(ph[0].getPriceHistory().get(i), PriceBar.CLOSE).getFormattedValue(Bollinger.LOWERBAND)
+					+ " " + bol.tick(ph[0].getPriceHistory().get(i), PriceBar.CLOSE).getFormattedValue(Bollinger.MIDPOINT)
+					+ " " + bol.tick(ph[0].getPriceHistory().get(i), PriceBar.CLOSE).getFormattedValue(Bollinger.UPPERBAND)
+					+ " " + bol.tick(ph[0].getPriceHistory().get(i), PriceBar.CLOSE).getFormattedValue(Bollinger.SIGMA));
+			
+		}
+		
+		
+	}
 
 	@SuppressWarnings("unused")
 	private void dummyData() {

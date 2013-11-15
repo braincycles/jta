@@ -1,8 +1,7 @@
 package indicators;
 
-import java.util.*;
-
-import data.QuoteHistory;
+import data.PriceBar;
+import data.PriceHistory;
 
 /**
  * Base class for all classes implementing technical indicators.
@@ -14,33 +13,28 @@ public abstract class Indicator {
 	public static int HARDLONG=10;
 	public static int HARDSHORT=-10;
 	
-	protected boolean save = true;
-	
     protected double value;
-    protected QuoteHistory qh;
-    private final List<IndicatorValue> history;
     protected Indicator parent;
-
-    public abstract double calculate(int upto);// must be implemented in subclasses.
     
-    public double calculate() {
-    	return calculate(-1);
+    protected PriceHistory values;
+    
+    public abstract IndicatorValue tick(PriceBar pb, int type);
+    
+    public void updateValues(PriceBar pb, int window) {
+    	values.addFirst(pb);
+		if(values.size()>window) 
+			values.removeLast();
     }
 
+    public abstract boolean isValid();
+    
     public Indicator() {
-        history = new ArrayList<IndicatorValue>();
-    }
-
-    public abstract boolean isValid(int upto);
-
-    public Indicator(QuoteHistory qh) {
-        this();
-        this.qh = qh;
+    	values = new PriceHistory();
     }
 
     public Indicator(Indicator parent) {
-        this();
         this.parent = parent;
+        //history = new ArrayList<IndicatorValue>();
     }
 
     @Override
@@ -52,24 +46,6 @@ public abstract class Indicator {
 
     public double getValue() {
         return value;
-    }
-
-    public long getDate() {
-        if (qh != null) {
-            return qh.getLastPriceBar().getDateLong();
-        } else {
-            List<IndicatorValue> parentHistory = parent.getHistory();
-            return parentHistory.get(parentHistory.size() - 1).getDate();
-        }
-    }
-
-
-    public void addToHistory(long date, double value) {
-        history.add(new IndicatorValue(date, value));
-    }
-
-    public List<IndicatorValue> getHistory() {
-        return history;
     }
 
 

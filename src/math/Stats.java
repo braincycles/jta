@@ -6,18 +6,17 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
 import data.PriceHistory;
-import data.QuoteHistory;
 
 public class Stats {
 
 
-	public static double variance(QuoteHistory qh,int window, int type) {
-		return variance(qh, 0, window, type);
+	public static double variance(PriceHistory ph,int window, int type) {
+		return variance(ph, 0, window, type);
 	}
 
 
-	public static double priceMean(QuoteHistory qh, int index, int window, int type) {
-		double[] data =  qh.getAllReturns(type);
+	public static double priceMean(PriceHistory ph, int index, int window, int type) {
+		double[] data =  ph.getAllReturns(type);
 		double[] resultData = new double[window];
 
 		if(index>data.length-1) index = data.length-1;
@@ -30,8 +29,8 @@ public class Stats {
 		return StatUtils.mean( resultData  );
 	}
 
-	public static double mean(QuoteHistory qh, int index, int window, int type) {
-		double[] data =  qh.getAll(type);
+	public static double mean(PriceHistory ph, int index, int window, int type) {
+		double[] data =  ph.getAll(type);
 		double[] resultData = new double[window];
 
 		if(index>data.length-1) index = data.length-1;
@@ -43,9 +42,20 @@ public class Stats {
 		}
 		return StatUtils.mean( resultData  );
 	}
+	
+	
+	public static double mean(PriceHistory ph, int type) {
+		double[] data =  ph.getAll(type);
 
-	public static double variance(QuoteHistory qh, int index, int window, int type) {
-		double[] data =  qh.getAll(type);
+		for(int i=0;i<ph.size();i++)
+			data[i] = data[i];
+
+		return StatUtils.mean(data);
+	}
+	
+
+	public static double variance(PriceHistory ph, int index, int window, int type) {
+		double[] data =  ph.getAll(type);
 		double[] resultData = new double[window];
 
 		if(index>data.length-1) index = data.length-1;
@@ -57,10 +67,20 @@ public class Stats {
 		}
 		return StatUtils.variance( resultData  );
 	}
+	
+	
+	public static double variance(PriceHistory ph, int type) {
+		double[] data =  ph.getAll(type);
+
+		for(int i=0;i<ph.size();i++) {
+			data[i] = data[i];
+		}
+		return StatUtils.variance( data  );
+	}
 
 
-	public static double priceVariance(QuoteHistory qh, int index, int window, int type) {
-		double[] data =  qh.getAllReturns(type);
+	public static double priceVariance(PriceHistory ph, int index, int window, int type) {
+		double[] data =  ph.getAllReturns(type);
 		double[] resultData = new double[window];
 
 		if(index>data.length-1) index = data.length-1;
@@ -74,13 +94,17 @@ public class Stats {
 	}
 
 
-	public static double priceSD(QuoteHistory qh, int index, int window, int type) {
-		return Math.sqrt(priceVariance(qh, index, window, type));	
+	public static double priceSD(PriceHistory ph, int index, int window, int type) {
+		return Math.sqrt(priceVariance(ph, index, window, type));	
 	}
 
 
-	public static double sd(QuoteHistory qh, int index, int window, int type) {
-		return Math.sqrt(variance(qh, index, window, type));
+	public static double sd(PriceHistory ph, int index, int window, int type) {
+		return Math.sqrt(variance(ph, index, window, type));
+	}
+	
+	public static double sd(PriceHistory ph, int type) {
+		return Math.sqrt(variance(ph, type));
 	}
 
 	/*
