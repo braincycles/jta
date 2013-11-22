@@ -1,9 +1,12 @@
 package data;
 
+import java.text.DecimalFormat;
+
 import org.joda.time.DateTime;
 
 
 public class PriceBar implements Comparable<PriceBar> {
+	DecimalFormat df = new DecimalFormat("+0.000;-0.000");
 	
 	public final static int OPEN = 100;
 	public final static int CLOSE = 101;
@@ -11,6 +14,7 @@ public class PriceBar implements Comparable<PriceBar> {
 	public final static int LOW = 103;
 	public final static int RETURNS = 104;
 
+	private String symbol;
 	private DateTime date;
 	private double volume;
 	private double high;
@@ -29,14 +33,35 @@ public class PriceBar implements Comparable<PriceBar> {
 		return ((PriceBar) obj).getDate().toLocalDate().isEqual(date.toLocalDate());
 	}
 
-	public PriceBar(double open, double high, double low, double close, double volume) {
+	public PriceBar(String symbol, double open, double high, double low, double close, double volume) {
 		super();
+		this.symbol = symbol;
 		this.high = high;
 		this.low = low;
 		this.open = open;
 		this.close = close;
 		this.volume = volume;
 		this.ret = 0;
+		
+		df = new DecimalFormat("+0.000;-0.000");
+	}
+	
+	
+	public double getFormattedPrice(int type) {
+		switch(type) {
+		  case CLOSE: 
+			  return Double.parseDouble(df.format(getClose()));
+		  case OPEN: 
+			  return Double.parseDouble(df.format(getOpen()));
+		  case HIGH: 
+			  return Double.parseDouble(df.format(getHigh()));
+		  case LOW: 
+			  return Double.parseDouble(df.format(getLow()));
+		  case RETURNS: 
+			  return Double.parseDouble(df.format(getRet()));
+		  default:
+			  return Double.parseDouble(df.format(getClose()));
+		}
 	}
 	
 	
@@ -65,8 +90,9 @@ public class PriceBar implements Comparable<PriceBar> {
 		this.ret = ret;
 	}
 
-	public PriceBar(DateTime date, double open, double high, double low, double close, double volume) {
+	public PriceBar(String symbol, DateTime date, double open, double high, double low, double close, double volume) {
 		super();
+		this.symbol = symbol;
 		this.high = high;
 		this.low = low;
 		this.open = open;
@@ -170,6 +196,22 @@ public class PriceBar implements Comparable<PriceBar> {
 		return date.compareTo(o.getDate());
 	}
 
+	public String getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
+	}
+
+	public void setDecimalFormat(DecimalFormat df) {
+		this.df = df;
+	}
+
+	@Override
+	public String toString() {
+		return "PriceBar: " + getSymbol();
+	}
 
 
 

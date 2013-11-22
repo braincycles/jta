@@ -1,30 +1,30 @@
 package indicators;
 
 import data.PriceBar;
-import data.PriceHistory;
 
 public class Bollinger  extends Indicator  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5573183814020491332L;
 	public static int UPPERBAND = 0;
 	public static int LOWERBAND = 1;
 	public static int MIDPOINT = 2;
 	public static int SIGMA = 3;
 
 	private final int period;
-	private final double multiple;
-	private PriceHistory values;
+	private final double[] multiple;
 	private Indicator average;
 	private Indicator sd;
 
 	public Bollinger(int period) {
-		this(period, 1.0);
-		values = new PriceHistory();
+		this(period, new double[]{2.0, 2.0});
 	}
 
-	public Bollinger(int p, double multiple) {
-		super();
+	public Bollinger(int p, double[] multiple) {
+		super("BOLL"+ p + "," + multiple + ")");
 		this.period = p;
 		this.multiple = multiple;
-		values = new PriceHistory();
 		sd = new SD(period);
 		average = new SMA(period);
 	}
@@ -33,18 +33,16 @@ public class Bollinger  extends Indicator  {
 
 	@Override
 	public IndicatorValue tick(PriceBar pb, int type) {
-		values.addFirst(pb);
-		if(values.size()>period) 
-			values.removeLast();
+		updateValues(pb, period);
 		
-		double mean = average.tick(pb, type).getValue(SMA.AVERAGE);
+		double ave = average.tick(pb, type).getValue(SMA.AVERAGE);
 		double sigma = sd.tick(pb, type).getValue(SD.SIGMA);
 		
-		double upperband = mean + sigma * multiple;
-		double lowerband = mean - sigma * multiple;
-		double[] result = new double[]{upperband, lowerband, mean, sigma};
+		double upperband = ave + sigma * multiple[0];
+		double lowerband = ave - sigma * multiple[1];
+		double[] result = new double[]{upperband, lowerband, ave, sigma};
 		
-		return new IndicatorValue(pb.getDate(),result); 
+		return new IndicatorValue(getName(), pb.getDate(),result); 
 	}
 	
 

@@ -26,10 +26,10 @@ public class Util {
 		newPb2.removeAll(pb1);
 		
 		for(PriceBar pb : newPb2)
-			pb1.add(new PriceBar(pb.getDate(),-1,-1,-1,-1,-1));
+			pb1.add(new PriceBar(pb.getSymbol(), pb.getDate(),-1,-1,-1,-1,-1));
 		
 		for(PriceBar pb : newPb1) 
-			pb2.add(new PriceBar(pb.getDate(),-1,-1,-1,-1,-1));
+			pb2.add(new PriceBar(pb.getSymbol(), pb.getDate(),-1,-1,-1,-1,-1));
 
 		Collections.sort(pb1);
 		Collections.sort(pb2);

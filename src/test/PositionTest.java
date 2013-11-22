@@ -6,12 +6,13 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import trade.Position;
+import portfolio.Position;
+
 import trade.Stock;
 import trade.StockTrade;
 import trade.Trade;
 
-public class testPosition {
+public class PositionTest {
 
 	
 	
@@ -65,13 +66,13 @@ public class testPosition {
 		Trade t2 = new StockTrade(new DateTime(), stock2,amount, price, fee);
 		
 		/* addToPosition should return false */
-		assertEquals(false, position.trade(t2).isSuccessful());
+		assertEquals(false, position.adjust(t2).isSuccessful());
 		/* Amount should be unaltered */
 		assertEquals("Amount in position not equal.", position.getAmount(), amount);
 		
 		Trade t3 = new StockTrade(new DateTime(),stock1,amount, price, fee);
 		/* addToPosition should return true */
-		assertEquals(true, position.trade(t3).isSuccessful());
+		assertEquals(true, position.adjust(t3).isSuccessful());
 		/* Amount should be double */
 		assertEquals("Amount in position not equal.", position.getAmount(), amount*2);
 		

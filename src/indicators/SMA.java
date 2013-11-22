@@ -26,17 +26,25 @@ import data.PriceBar;
 import data.PriceHistory;
 
 public class SMA extends Indicator {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3653081977151475874L;
+
 	public static int AVERAGE = 0;
 
 	private int window;
-	//private Deque<PriceBar> values;
-	private PriceHistory values;
 
-	public SMA(int window) {
-		super();
+	
+	public SMA(Integer window) {
+		super("SMA("+window+")");
 		//values = new ArrayDeque<PriceBar>();
 		values = new PriceHistory();
 		this.window = window;
+	}
+	
+	public SMA(int window) {
+		this(new Integer(window));
 	}
 	
 
@@ -45,7 +53,7 @@ public class SMA extends Indicator {
 		values.addFirst(pb);
 		if(values.size()>window) 
 			values.removeLast();
-		return new IndicatorValue(pb.getDate(), new double[]{average(values, type)});
+		return new IndicatorValue(getName(), pb.getDate(), new double[]{average(values, type)});
 	}
 	
 

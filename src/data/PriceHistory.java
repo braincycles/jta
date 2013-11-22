@@ -1,11 +1,17 @@
 package data;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
-public class PriceHistory {
+public class PriceHistory implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6287160493517980419L;
+	
 	public static int DAILY = 0;
 	public static int WEEKLY = 1;
 	public static int MONTLY = 2;

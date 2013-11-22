@@ -30,6 +30,11 @@ import data.PriceBar;
  * Exponential Moving Average.
  */
 public class EMA extends Indicator {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5174492027786626269L;
+
 	public static int AVERAGE = 0;
 	
 	private final int window;
@@ -37,7 +42,7 @@ public class EMA extends Indicator {
 	private Deque<PriceBar> priceBars;
 
 	public EMA(int window) {
-		super();
+		super("EMA("+window+")");
 		this.window = window;
 		multiplier = 2. / (window + 0.);
 		priceBars = new ArrayDeque<PriceBar>();
@@ -49,7 +54,7 @@ public class EMA extends Indicator {
 		if(priceBars.size()>(2 * window + 1)) 
 			priceBars.removeLast();
 
-		return new IndicatorValue(pb.getDate(), new double[]{average(priceBars, type)});
+		return new IndicatorValue(getName(), pb.getDate(), new double[]{average(priceBars, type)});
 	}
 
 

@@ -1,4 +1,4 @@
-package trade;
+package strategy;
 
 
 import java.util.LinkedList;
@@ -9,7 +9,6 @@ import org.joda.time.DateTime;
 import data.PriceBar;
 import data.QuoteHistory;
 
-import strategy.BollingerStrategy;
 
 public class MarketRunner {
 

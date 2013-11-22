@@ -2,7 +2,7 @@ package trade;
 
 import org.joda.time.DateTime;
 
-public class SpreadBet extends Trade{
+public class SpreadBet extends Trade {
 
 	private boolean active;
 	private int base;
@@ -12,16 +12,16 @@ public class SpreadBet extends Trade{
 	private double stopLossPrice;
 	private double takeProfitPrice;
 
-	public SpreadBet(DateTime date, Stock stock, int type, double bet, double initialPrice, int base, Spread spr, double stopLossPrice, double takeProfitPrice) {
-		super(date, stock, );
-		this.tradeType = type;
+	public SpreadBet(DateTime date, Stock stock, int type, int points, double price, int base, Spread spr, double stopLossPrice, double takeProfitPrice) throws Exception {
+		super(date, stock, points,  points);
+		this.type = type;
 		this.stopLossPrice = stopLossPrice;
 		this.takeProfitPrice = takeProfitPrice;
 		this.base = base;
 		this.spread = spr;
 		this.bet = bet;	
 		this.price = price;
-		this.initialPoints = (int) ((base * initialPrice) + spread.getSpread(type));
+		this.initialPoints = (int) ((base * points) + spread.getSpread(type));
 		this.active = true;
 	}
 	
@@ -109,7 +109,9 @@ public class SpreadBet extends Trade{
 
 
 
-
+	/* Constants */
+	public final static int LONG = 1;
+	public final static int SHORT = -1;
 
 
 }

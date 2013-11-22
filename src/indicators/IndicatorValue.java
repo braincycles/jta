@@ -5,14 +5,25 @@ import java.text.DecimalFormat;
 import org.joda.time.DateTime;
 
 public class IndicatorValue {
-	DecimalFormat df = new DecimalFormat("+0.000;-0.000");
+	private DecimalFormat df = new DecimalFormat("+0.000;-0.000");
 	
+	private String message;
 	private final DateTime date;
 	private final double[] value;
+	private String name;
 
-	public IndicatorValue(DateTime date, double[] value) {
+	public IndicatorValue(String name, DateTime date, double[] value) {
+		this.name = name;
 		this.date = date;
 		this.value = value;
+		this.message = "";
+	}
+	
+	public IndicatorValue(String name, DateTime date, double[] value, String message) {
+		this.name = name;
+		this.date = date;
+		this.value = value;
+		this.message = message;
 	}
 
 	public DateTime getDate() {
@@ -31,6 +42,33 @@ public class IndicatorValue {
 		return Double.parseDouble(df.format(value[index]));
 	}
 
+
+	public void setDecimalFormat(DecimalFormat df) {
+		this.df = df;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Indicator: " + name + " : " + value[0];
+	}
+
+	
 	
 }
 

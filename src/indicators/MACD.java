@@ -28,6 +28,11 @@ import data.PriceBar;
  * MACD
  */
 public class MACD extends Indicator {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9124425288744798657L;
+
 	public static int MACD = 0;
 	
     private final int fastLength, slowLength;
@@ -35,7 +40,7 @@ public class MACD extends Indicator {
     private Indicator sEMA;
 
     public MACD(int slowL, int fastL) {
-        super();
+        super("MACD("+slowL+","+fastL+")");
         this.fastLength = fastL;
         this.slowLength = slowL;
         fEMA = new EMA(fastLength);
@@ -49,7 +54,7 @@ public class MACD extends Indicator {
         
         value = fastEMA.getValue(EMA.AVERAGE) - slowEMA.getValue(EMA.AVERAGE);
 
-        return new IndicatorValue(pb.getDate(), new double[]{value});
+        return new IndicatorValue(getName(), pb.getDate(), new double[]{value});
     }
 
 

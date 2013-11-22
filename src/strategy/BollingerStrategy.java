@@ -1,54 +1,51 @@
 package strategy;
 
-import java.util.List;
-
 import data.PriceBar;
-import data.PriceHistory;
 
 import indicators.Bollinger;
 import indicators.IndicatorValue;
 
-public class BollingerStrategy {
+public class BollingerStrategy extends AbstractStrategy {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1610284705361986653L;
 	private Bollinger boll;
-	private PriceHistory quoteHistory;
 	
-	public BollingerStrategy(PriceHistory qh, int period) {
-		this.quoteHistory = qh;
-		this.boll = new Bollinger(period, 2);
+	public BollingerStrategy(int period, double[] multiple) {
+		super("Bollinger Strategy");
+		this.boll = new Bollinger(period, multiple);
 	}
 	
-	
-	public void run() {
-		List<PriceBar> prices = quoteHistory.getPriceBars();
+
+	@Override
+	public IndicatorValue tick(PriceBar priceBar, int type) {
 		
-		for(int i=0;i<prices.size();i++) {
-			PriceBar priceBar = prices.get(i);
-			double close = priceBar.getClose();
-			
-			IndicatorValue value = boll.tick(priceBar, PriceBar.CLOSE);
-			//System.err.println(prices.get(i).getDate() + " " + close + " " + boll.getLowerBand() + " " + boll.getMidpoint() + " "  + boll.getUpperBand());
-			double upperBand = value.getValue(Bollinger.UPPERBAND);
-			double lowerBand = value.getValue(Bollinger.LOWERBAND);
-			double midPoint = value.getValue(Bollinger.MIDPOINT);
-			
-			
-			if(close > upperBand) {
-				priceBar.setPriceAction(-10);
-				System.out.println(priceBar.getDate() + " Top " + close + " " + lowerBand + " " + midPoint + " "  + upperBand);
-			}
-			
-			if(close < lowerBand) {
-				priceBar.setPriceAction(10);
-				System.out.println(priceBar.getDate() + " Bot " + close + " " + lowerBand + " " + midPoint + " "  + upperBand);
-			}
-			
+		double price = priceBar.getPrice(type);
+		IndicatorValue value = boll.tick(priceBar, type);
+		double upperBand = value.getValue(Bollinger.UPPERBAND);
+		double lowerBand = value.getValue(Bollinger.LOWERBAND);
+		
+		if(price > upperBand) {
+			setWeight(price/upperBand);
+			return new IndicatorValue(getName(), priceBar.getDate(), new double[]{SELL_SIGNAL*getWeight()}, "Hit top Bollinger band");
 		}
-		
-		
-		
+		else if(price < lowerBand) {
+			setWeight(price/lowerBand);
+			return new IndicatorValue(getName(), priceBar.getDate(), new double[]{BUY_SIGNAL*getWeight()}, "Hit bottom Bollinger band");
+		}
+		else
+			return new IndicatorValue(getName(), priceBar.getDate(), new double[]{0}, "");
 	}
 	
 	
+
+
+
+	@Override
+	public boolean isValid() {
+		return boll.isValid();
+	}
 
 }

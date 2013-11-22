@@ -73,7 +73,7 @@ public class YahooHistoricalDataReader implements HistorialDataReader {
 				double low = Double.parseDouble(st.nextToken());
 				double close = Double.parseDouble(st.nextToken());
 				double volume = Double.parseDouble(st.nextToken());
-				ph.addPriceBar(new PriceBar(dt,open, high, low, close, volume));
+				ph.addPriceBar(new PriceBar(ph.getSymbol(), dt,open, high, low, close, volume));
 			}
 			ph.reverseData();
 		}
@@ -155,7 +155,7 @@ public class YahooHistoricalDataReader implements HistorialDataReader {
 				double close = Double.valueOf(yahooStockInfo[4]);
 				double volume = Double.valueOf(yahooStockInfo[5]);
 
-				PriceBar priceBar = new PriceBar(dt, open, high, low, close,  volume);
+				PriceBar priceBar = new PriceBar(symbol, dt, open, high, low, close,  volume);
 				history.addPriceBar(priceBar);
 			}
 			in.close();

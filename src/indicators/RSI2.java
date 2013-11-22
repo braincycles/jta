@@ -37,12 +37,16 @@ import data.PriceBar;
  */
 
 public class RSI2 extends Indicator {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5693018256783599882L;
 	public static int RSI = 0;
 	private final int periodLength;
 	private final Stack<Averages> avgList;
 
 	public RSI2(int periodLength) {
-		super();
+		super("RSI2("+periodLength+")");
 		this.periodLength = periodLength;
 		avgList = new Stack<Averages>();
 	}
@@ -76,7 +80,7 @@ public class RSI2 extends Indicator {
 		int lastBar = qhSize - 1;
 		int firstBar = lastBar - periodLength + 1;
 		
-		if(values.size() != periodLength) return new IndicatorValue(new DateTime(), new double[]{0.0});
+		if(values.size() != periodLength) return new IndicatorValue(getName(), new DateTime(), new double[]{0.0});
 		
 		double gains = 0, losses = 0, avgUp = 0 , avgDown = 0 ;
 
@@ -105,7 +109,7 @@ public class RSI2 extends Indicator {
 		}
 		value = 100 - (100 / (1+ (avgUp / avgDown)));
 		
-		return new IndicatorValue(pb.getDate(), new double[]{value});
+		return new IndicatorValue(getName(), pb.getDate(), new double[]{value});
 	}
 	
 	

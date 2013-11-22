@@ -26,6 +26,11 @@ public class StockTrade extends Trade {
 		return fee+(price*amount);
 	}
 	
+	@Override
+	public double getCostOfTrade(int amount) {
+		return fee+(price*amount);
+	}
+	
 	
 	
 

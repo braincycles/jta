@@ -18,7 +18,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-*/
+ */
 
 package indicators;
 
@@ -27,31 +27,39 @@ import data.PriceBar;
 import data.PriceHistory;
 
 public class SD extends Indicator {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4151070734258813652L;
+
 	public static int SIGMA = 0;
 
 	private int window;
-	private PriceHistory values;
 
 	public SD(int window) {
-		super();
+		super("SD("+ window + ")");
 		values = new PriceHistory();
 		this.window = window;
 	}
-	
+
 
 	@Override
 	public IndicatorValue tick(PriceBar pb, int type) {
 		updateValues(pb, window);
-		return new IndicatorValue(pb.getDate(), new double[]{sd(values, type)});
+
+		if(isValid())
+			return new IndicatorValue(getName(), pb.getDate(), new double[]{sd(values, type)});
+		else 
+			return new IndicatorValue(getName(), pb.getDate(), new double[]{0});
 	}
-	
+
 
 	@Override
 	public boolean isValid() {
 		return (values.size() >= window);
 	}
-	
-	
+
+
 	private double sd(PriceHistory prices, int type) {
 		return Stats.sd(prices, type);
 	}

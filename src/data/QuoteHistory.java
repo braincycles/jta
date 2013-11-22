@@ -11,6 +11,11 @@ import java.util.List;
  */
 public class QuoteHistory extends PriceHistory {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4932087170048795935L;
+
 	private static final String lineSep = System.getProperty("line.separator");
 	
 	public static int BUY =  10;

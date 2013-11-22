@@ -1,7 +1,11 @@
-package trade;
+package portfolio;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import trade.Stock;
+import trade.Trade;
+import trade.Transaction;
 
 public class Position {
 	
@@ -15,10 +19,11 @@ public class Position {
 	private double initialValue;
 	
 	private Map<Integer, Trade> trades;
+	private boolean empty = true;
 	
 	
 	public Position() {
-		
+		empty = true;
 	}
 	
 	public Position(Trade trade) {
@@ -30,26 +35,26 @@ public class Position {
 		setInitialValue(amount*trade.getPrice());
 		setInitialPrice(trade.getPrice());
 		setCurrentPrice(trade.getPrice());
+		setEmpty(false);
 	}
 	
 	
 	public double closePosition(double price) {
+		setEmpty(true);
 		return amount*price;
 	}
 	
 	
-	public Transaction trade(Trade trade) {
-		Transaction transaction = new Transaction();
+	public Transaction adjust(Trade trade) {
+		Transaction transaction = new Transaction(trade);
 		if(trade.getStock().equals(stock) == false) {
-			transaction.setSuccessful(false);
-			transaction.addMessage(WRONG_SYMBOL, "Wrong symbol on underlying asset.");
+			transaction.setSuccessful(false, WRONG_SYMBOL, "Wrong symbol on underlying asset");
 			return transaction;
 		}
 		
-		if(trade.type == Trade.SELL) {
+		if(trade.getType() == Trade.SELL) {
 			if(getAmount() < trade.getAmount()) {
-				transaction.setSuccessful(false);
-				transaction.addMessage(NOT_ENOUGH_ASSET, "Not enough asset to sell.");
+				transaction.setSuccessful(false, NOT_ENOUGH_ASSET, "Not enough asset to sell");
 				return transaction;
 			}
 		}
@@ -59,7 +64,7 @@ public class Position {
 		/* Add to the initial position price */
 		setInitialValue(amount*trade.getPrice());
 		
-		transaction.setSuccessful(true);
+		transaction.setSuccessful(true, OK, "");
 		return transaction;
 	}
 
@@ -122,6 +127,17 @@ public class Position {
 	
 	
 	
+	public boolean isEmpty() {
+		return empty;
+	}
+
+	public void setEmpty(boolean empty) {
+		this.empty = empty;
+	}
+
+
+
+
 	/* Constants */
 	public static int OK = 1;
 	public static int NOT_ENOUGH_ASSET = 10001;

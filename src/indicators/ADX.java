@@ -13,6 +13,10 @@ import data.PriceBar;
  * @date 25/05/2008
  */
 public class ADX extends Indicator {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4191387453946354221L;
 	public static int ADX = 0;
 	private final int periodLength;
 	private double[] tr = null;
@@ -27,7 +31,7 @@ public class ADX extends Indicator {
 
 
 	public ADX(int periodLength) {
-		super();
+		super("ADX");
 		this.periodLength = periodLength;
 		this.tr = new double[periodLength];
 		this.dmPlus = new double[periodLength];
@@ -43,7 +47,7 @@ public class ADX extends Indicator {
 	public IndicatorValue tick(PriceBar pb, int type) {
 		updateValues(pb, periodLength);
 		
-		if(values.size() != periodLength) return new IndicatorValue(new DateTime(), new double[]{0.0});
+		if(values.size() != periodLength) return new IndicatorValue(getName(), new DateTime(), new double[]{0.0});
 
 		//        int periodStart = qh.size() - periodLength;
 		int periodEnd = values.size() - 1;
@@ -127,7 +131,7 @@ public class ADX extends Indicator {
 		counter++;
 
 		value = adx[periodLength-1];
-		return new IndicatorValue(pb.getDate(), new double[]{value});
+		return new IndicatorValue(getName(), pb.getDate(), new double[]{value});
 	}
 
 

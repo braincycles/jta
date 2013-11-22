@@ -20,21 +20,17 @@ public abstract class Trade {
 	
 	
 	public Trade(DateTime date, Stock stock, int amount, double price) throws Exception {
-		this(date, stock, amount, price, false);
-	}
-	
-	
-	public Trade(DateTime date, Stock stock, int amount, double price, boolean existingPosition) 
-	 																throws Exception {
 		this.status = PENDING;
 		setAmount(amount);
 		setPrice(price);
 		setStock(stock);
 		setDate(date);
-		this.existingPosition = existingPosition;
 	}
 
 	
+	public String getSymbol() {
+		return stock.getSymbol();
+	}
 	
 	public int getType() {
 		return amount>0 ? BUY : SELL;
@@ -67,16 +63,13 @@ public abstract class Trade {
 	}
 
 
-
 	public abstract double getCostOfTrade();
 
-
+	public abstract double getCostOfTrade(int amount);
 
 	public DateTime getDate() {
 		return date;
 	}
-
-
 
 
 	private void setDate(DateTime date) {

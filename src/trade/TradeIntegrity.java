@@ -15,7 +15,7 @@ public class TradeIntegrity {
 	
 	
 	private static boolean checkAmount(int amount) {
-		return amount>0;
+		return true;
 	}
 	
 	private static boolean checkDate(DateTime date) {

@@ -40,24 +40,18 @@ public class Stock {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		Stock other = (Stock) obj;
-		if (longName == null) {
-			if (other.longName != null)
-				return false;
-		} else if (!longName.equals(other.longName))
-			return false;
 		if (symbol == null) {
 			if (other.symbol != null)
 				return false;
 		} else if (!symbol.equals(other.symbol))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return symbol;
 	}
 	
 	
