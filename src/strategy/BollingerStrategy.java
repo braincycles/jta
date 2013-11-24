@@ -16,8 +16,7 @@ public class BollingerStrategy extends AbstractStrategy {
 	private double lowerBandThreshold = 0.8;
 	
 	public BollingerStrategy(int period, double multiple) {
-		super("Bollinger Strategy");
-		this.boll = new Bollinger(period, new double[]{multiple, multiple});
+		this(period, new double[]{multiple, multiple});
 	}
 	
 	public BollingerStrategy(int period, double[] multiple) {
@@ -30,44 +29,30 @@ public class BollingerStrategy extends AbstractStrategy {
 	public IndicatorValue tick(PriceBar priceBar, int type) {
 		
 		double price = priceBar.getPrice(type);
-		IndicatorValue value = boll.tick(priceBar, type);
+		IndicatorValue bollValue = boll.tick(priceBar, type);
 		
 		if(isValid() == false)
 			return new IndicatorValue(getName(), priceBar.getDate(), new double[]{0}, getName() + " not valid");
 		
-		double upperBand = value.getValue(Bollinger.UPPERBAND);
-		double lowerBand = value.getValue(Bollinger.LOWERBAND);
-		double midBand = value.getValue(Bollinger.MIDPOINT);
+		double upperBand = bollValue.getValue(Bollinger.UPPERBAND);
+		double lowerBand = bollValue.getValue(Bollinger.LOWERBAND);
+		double midBand = bollValue.getValue(Bollinger.MIDPOINT);
 		
-		double midToUpper = upperBand - midBand;
-		double midToLower = midBand - lowerBand;
-		
-		double distFromMid = Math.abs(price - midBand);
-		
-		double normDistToUpper = 0.0;
-		double normDistToLower = 0.0;
-		
+		double value = 0.0;
 		if(price>=midBand) {
-			if(price <= upperBand) //Within upper band
-				normDistToUpper = 1-(midToUpper-distFromMid)/midToUpper;
-			else
-				normDistToUpper = 1+(distFromMid-midToUpper)/midToUpper;
+			value = getPercentInRange(midBand, upperBand, price);
+			setWeight(value);
 		}
 		else {
-			if(price >= lowerBand) //Within lower band
-				normDistToLower = 1-(midToLower-distFromMid)/midToLower;
-			else
-				normDistToLower = 1+(distFromMid-midToLower)/midToLower;
+			value = getPercentInRange(midBand, lowerBand, price);
+			setWeight(value);
 		}
 		
-		//System.out.println(normDistToUpper + " " + upperBand + " " + price + " " + lowerBand + " " + normDistToLower + " " + (price>upperBand));
-		
-		if(normDistToUpper >= upperBandThreshold && price>=midBand) {
-			setWeight(price/upperBand);
+		if(value >= upperBandThreshold && price>=midBand) {
+			
 			return new IndicatorValue(getName(), priceBar.getDate(), new double[]{SELL_SIGNAL*getWeight()}, "Hit top Bollinger band");
 		}
-		else if(normDistToLower > lowerBandThreshold && price >= lowerBand) {
-			setWeight(price/lowerBand);
+		else if(value > lowerBandThreshold && price >= lowerBand) {
 			return new IndicatorValue(getName(), priceBar.getDate(), new double[]{BUY_SIGNAL*getWeight()}, "Hit bottom Bollinger band");
 		}
 		else
@@ -75,7 +60,9 @@ public class BollingerStrategy extends AbstractStrategy {
 	}
 	
 	
-
+	private double getPercentInRange(double low, double high, double value) {
+		return (value-low)/(high-low);
+	}
 
 
 	@Override
@@ -88,9 +75,5 @@ public class BollingerStrategy extends AbstractStrategy {
 		this.lowerBandThreshold = bandThresholds[0];
 		this.upperBandThreshold = bandThresholds[1];
 	}
-
-	
-	
-	
 	
 }
