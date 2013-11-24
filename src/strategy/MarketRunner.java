@@ -33,8 +33,8 @@ public class MarketRunner {
 		for(QuoteHistory qh:quoteHistories ) {
 			List<PriceBar> prices = qh.getPriceBars();
 			
-			BollingerStrategy bollStrat = new BollingerStrategy(qh, 14);
-			bollStrat.run();
+			BollingerStrategy bollStrat = new BollingerStrategy(14, new double[]{2.0, 2.0});
+			//bollStrat.run();
 			
 			for(int i=0;i<prices.size();i++) {
 				

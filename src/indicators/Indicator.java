@@ -34,6 +34,11 @@ public abstract class Indicator implements Serializable {
 			values.removeLast();
     }
 
+    
+    /** Returns whether the indicator will return a valid value;
+	 * 
+	 * @return			boolean valid return value.
+	 */
     public abstract boolean isValid();
     
     public Indicator(String name) {

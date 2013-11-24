@@ -47,11 +47,12 @@ public class PortfolioManager {
 	public Transaction registerTrade(String portfolioName, Trade t, String[] messages) {
 		Transaction transaction = new Transaction(t, portfolioName);
 		Portfolio portfolio = getPortfolio(portfolioName);
-
-		if(!TradeIntegrity.checkTradeBasics(t))
+		
+		if(portfolio.isEmpty())
+			transaction.setSuccessful(false, NO_PORTFOLIO, "Portfolio \"" + portfolioName + "\" is not present.");
+		else if(!TradeIntegrity.checkTradeBasics(t))
 			transaction.setSuccessful(false, BAD_TRADE, "Trade did not meet integrity tests.");
-
-		if(t.getType() == Trade.SELL) {
+		else if(t.getType() == Trade.SELL) {
 			if(getPortfolio(portfolioName).checkForPosition(t.getStock()) == false && allowedShortSelling == false)
 				transaction.setSuccessful(false, SHORT_SELLING_NOT_ALLOWED, "Short selling is not allowed.");
 			else {
@@ -60,9 +61,7 @@ public class PortfolioManager {
 			}
 		}
 		else { //BUY
-			if(portfolio == null)
-				transaction.setSuccessful(false, NO_PORTFOLIO, "Portfolio \"" + portfolioName + "\" is not present.");
-			else if(getPortfolio(portfolioName).checkForPosition(t.getStock()) == true && addToExisitingPositions == false)
+			if(getPortfolio(portfolioName).checkForPosition(t.getStock()) == true && addToExisitingPositions == false)
 				transaction.setSuccessful(false, CANNOT_ADD_TO_EXISITING_POSITION, "Cannot add to exisiting position.");
 			else {
 				transaction = portfolio.addPosition(t);

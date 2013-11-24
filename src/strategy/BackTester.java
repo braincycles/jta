@@ -104,7 +104,7 @@ public class BackTester {
 					messages[ind] = strategyOutcome.getMessage();
 				}
 				
-				System.out.println(bars[bar].getClose() + " " + netStrategyOutcome);
+				//System.out.println(bars[bar].getClose() + " " + netStrategyOutcome);
 				
 				if(netStrategyOutcome > buyThreshold) {
 					int amount = TradeManager.getAmountByPercentage(portman.getPortfolioCash(portfolioName), bars[bar].getClose(), 0.5);

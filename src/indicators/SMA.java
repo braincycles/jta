@@ -38,7 +38,6 @@ public class SMA extends Indicator {
 	
 	public SMA(Integer window) {
 		super("SMA("+window+")");
-		//values = new ArrayDeque<PriceBar>();
 		values = new PriceHistory();
 		this.window = window;
 	}

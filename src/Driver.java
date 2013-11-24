@@ -86,22 +86,19 @@ public class Driver {
 		YahooHistoricalDataReader ydr = new YahooHistoricalDataReader();
 
 		PriceHistory[] ph = ydr.getHistoricalStockPrices(
-				new String[]{"YHOO"}, 
+				new String[]{"YHOO", "AAPL"}, 
 				new DateTime(2010,1,1,0,0,0), new DateTime(2013,10,4,0,0,0), PriceHistory.DAILY);
 
 		BollingerStrategy boll = new BollingerStrategy(30, new double[]{3,2});	
-
-
+		boll.setBandThresholds(new double[]{0.4, 0.4});
+		
 		Indicator[] indicators = new Indicator[]{boll};
 		
 		BackTester bt = new BackTester(ph, indicators);
 		bt.setLimits(0.1, 0.15);
-		bt.setThresholds(1.01, 1.01);
+		bt.setThresholds(0, 0);
 		bt.setupPortfolio("Backtest Portfolio", 10000, 2);
-		
-
 		bt.run();
-
 	}
 
 
